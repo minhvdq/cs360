@@ -2,13 +2,47 @@
 declare(strict_types=1);
 
 /*
- * Update these values for your local database.
+ * Loads key=value pairs from .env in this folder.
  */
-$dbHost = 'localhost:3307';
-$dbName = 'sakila';
-$dbUser = 'vudimi01';
-$dbPass = 'vudimi01';
-$dbCharset = 'utf8mb4';
+function loadEnvFile(string $path): array
+{
+    if (!is_file($path)) {
+        return [];
+    }
+
+    $values = [];
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines === false) {
+        return [];
+    }
+
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) {
+            continue;
+        }
+
+        $parts = explode('=', $line, 2);
+        if (count($parts) !== 2) {
+            continue;
+        }
+
+        $key = trim($parts[0]);
+        $value = trim($parts[1]);
+        $value = trim($value, "\"'");
+        $values[$key] = $value;
+    }
+
+    return $values;
+}
+
+$env = loadEnvFile(__DIR__ . '/.env');
+
+$dbHost = $env['DB_HOST'] ?? 'localhost:3307';
+$dbName = $env['DB_NAME'] ?? 'sakila';
+$dbUser = $env['DB_USER'] ?? 'root';
+$dbPass = $env['DB_PASS'] ?? '';
+$dbCharset = $env['DB_CHARSET'] ?? 'utf8mb4';
 
 $title = isset($_GET['title']) ? trim((string) $_GET['title']) : '';
 $rating = isset($_GET['rating']) ? trim((string) $_GET['rating']) : '';
