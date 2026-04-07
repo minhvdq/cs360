@@ -1,48 +1,11 @@
 <?php
 declare(strict_types=1);
 
-/*
- * Loads key=value pairs from .env in this folder.
- */
-function loadEnvFile(string $path): array
-{
-    if (!is_file($path)) {
-        return [];
-    }
-
-    $values = [];
-    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    if ($lines === false) {
-        return [];
-    }
-
-    foreach ($lines as $line) {
-        $line = trim($line);
-        if ($line === '' || str_starts_with($line, '#')) {
-            continue;
-        }
-
-        $parts = explode('=', $line, 2);
-        if (count($parts) !== 2) {
-            continue;
-        }
-
-        $key = trim($parts[0]);
-        $value = trim($parts[1]);
-        $value = trim($value, "\"'");
-        $values[$key] = $value;
-    }
-
-    return $values;
-}
-
-$env = loadEnvFile(__DIR__ . '/.env');
-
-$dbHost = $env['DB_HOST'] ? "crayon:3306";
-$dbName = $env['DB_NAME'] ? "sakila";
-$dbUser = $env['DB_USER'] ? "vudimi01";
-$dbPass = $env['DB_PASS'] ? "vudimi01";
-$dbCharset = $env['DB_CHARSET'] ? "utf8mb4";
+$dbHost = "cray";
+$dbName =  "sakila";
+$dbUser =  "vudimi01";
+$dbPass =  "vudimi01";
+$dbCharset = "utf8mb4";
 
 $title = isset($_GET['title']) ? trim((string) $_GET['title']) : '';
 $rating = isset($_GET['rating']) ? trim((string) $_GET['rating']) : '';
@@ -52,14 +15,14 @@ $errorMessage = '';
 
 if ($title !== '' || $rating !== '') {
     try {
-        $dsn = "mysql:host={$dbHost};dbname={$dbName};charset={$dbCharset}";
+        $dsn = "mysql:host=$dbHost;dbname=$dbName;charset=$dbCharset";
         $pdo = new PDO($dsn, $dbUser, $dbPass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
 
         $sql = "SELECT title, rating, release_year
-                FROM film
+                FROM film   
                 WHERE (:titleExact = '' OR title LIKE :titleLike)
                   AND (:rating = '' OR rating = :rating)
                 ORDER BY title ASC";
