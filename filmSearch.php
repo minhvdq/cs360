@@ -45,18 +45,7 @@ if ($title !== '' || $rating !== '') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Film Search</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 2rem; }
-        form { margin-bottom: 1.25rem; }
-        label { display: inline-block; width: 90px; margin-bottom: 0.5rem; }
-        input, select { padding: 0.4rem; width: 220px; }
-        button { padding: 0.45rem 0.8rem; margin-top: 0.5rem; }
-        table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-        th, td { border: 1px solid #ddd; padding: 0.55rem; text-align: left; }
-        th { background: #f2f2f2; }
-        .message { margin-top: 1rem; }
-        .error { color: #b00020; }
-    </style>
+    
 </head>
 <body>
     <h1>Film Search</h1>
