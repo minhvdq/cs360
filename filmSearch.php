@@ -38,11 +38,11 @@ function loadEnvFile(string $path): array
 
 $env = loadEnvFile(__DIR__ . '/.env');
 
-$dbHost = $env['DB_HOST'] ?? 'localhost:3307';
-$dbName = $env['DB_NAME'] ?? 'sakila';
-$dbUser = $env['DB_USER'] ?? 'root';
-$dbPass = $env['DB_PASS'] ?? '';
-$dbCharset = $env['DB_CHARSET'] ?? 'utf8mb4';
+$dbHost = $env['DB_HOST'] ? "crayon:3306";
+$dbName = $env['DB_NAME'] ? "sakila";
+$dbUser = $env['DB_USER'] ? "vudimi01";
+$dbPass = $env['DB_PASS'] ? "vudimi01";
+$dbCharset = $env['DB_CHARSET'] ? "utf8mb4";
 
 $title = isset($_GET['title']) ? trim((string) $_GET['title']) : '';
 $rating = isset($_GET['rating']) ? trim((string) $_GET['rating']) : '';
@@ -58,23 +58,18 @@ if ($title !== '' || $rating !== '') {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         ]);
 
-        $sql = "SELECT title, rating, release_year FROM film WHERE 1=1";
-        $params = [];
+        $sql = "SELECT title, rating, release_year
+                FROM film
+                WHERE (:titleExact = '' OR title LIKE :titleLike)
+                  AND (:rating = '' OR rating = :rating)
+                ORDER BY title ASC";
 
-        if ($title !== '') {
-            $sql .= " AND title LIKE :title";
-            $params[':title'] = '%' . $title . '%';
-        }
-
-        if ($rating !== '') {
-            $sql .= " AND rating = :rating";
-            $params[':rating'] = $rating;
-        }
-
-        $sql .= " ORDER BY title ASC";
-
+        $titleLike = '%' . $title . '%';
         $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
+        $stmt->bindParam(':titleExact', $title, PDO::PARAM_STR);
+        $stmt->bindParam(':titleLike', $titleLike, PDO::PARAM_STR);
+        $stmt->bindParam(':rating', $rating, PDO::PARAM_STR);
+        $stmt->execute();
         $films = $stmt->fetchAll();
     } catch (PDOException $e) {
         $errorMessage = 'Database error: ' . $e->getMessage();
