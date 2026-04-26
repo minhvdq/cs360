@@ -1,16 +1,3 @@
-## Live Demo
-https://cs.gettysburg.edu/~vudimi01/cs360/webApp/lobby.php
-
-## Game
-Two-player **Tic-Tac-Toe**. Registered users can challenge each other, accept or decline
-challenges, play games turn-by-turn, and review completed game history — all from the lobby.
-
-## Application URL
-https://cs.gettysburg.edu/~vudimi01/cs360/webApp/lobby.php
-
-## Database Schema
-
-```sql
 -- Users (from previous homework)
 CREATE TABLE IF NOT EXISTS users (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -30,7 +17,7 @@ CREATE TABLE IF NOT EXISTS challenges (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Tic-tac-toe games
--- board: 9-char string, '-' = empty, 'X'/'O' per cell (positions 0-8, row-major)
+-- board: 9-char string, '-' = empty, 'X' or 'O' for each cell (positions 0-8)
 -- player_x goes first
 CREATE TABLE IF NOT EXISTS games (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -46,15 +33,3 @@ CREATE TABLE IF NOT EXISTS games (
   FOREIGN KEY (player_o_id) REFERENCES users(id) ON DELETE CASCADE,
   FOREIGN KEY (winner_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-```
-
-## Pages
-
-| File | Purpose |
-|------|---------|
-| `login.php` | User login |
-| `register.php` | User registration |
-| `lobby.php` | Main lobby: challenge players, view incoming challenges, active games, history |
-| `challenge.php` | POST handler: send / accept / decline challenges; creates game on accept |
-| `game.php` | Tic-tac-toe board; submit moves via form |
-| `logout.php` | Ends session |
