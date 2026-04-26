@@ -1,16 +1,15 @@
 <?php
 declare(strict_types=1);
 
+$dbHost = 'cray';
 $dbName = 's26_vudimi01';
 $dbUser = 'vudimi01';
 $dbPass = 'vudimi01';
+$dbCharset = 'utf8mb4';
 
 // Use PostgreSQL locally; MySQL on the school server (cray)
-$onSchoolServer = in_array(gethostname(), ['cray', 'cray.ms.gettysburg.edu'], true);
 
-$dsn = $onSchoolServer
-    ? "mysql:host=cray;dbname={$dbName};charset=utf8mb4"
-    : "pgsql:host=127.0.0.1;dbname={$dbName}";
+$dsn = "mysql:host={$dbHost};dbname={$dbName};charset={$dbCharset}";
 
 try {
     $pdo = new PDO($dsn, $dbUser, $dbPass, [
